@@ -1,12 +1,16 @@
-CC=gcc
-CFLAGS=-Wall -O3 -I inc/
+CC=g++
+CFLAGS=-Wall -O3 -I inc -lpthread -std=c++0x
 BIN=bin
 SRC=src
+OBJ=obj
 
 all: main
 
-main:
-	$(CC) $(CFLAGS) $(SRC)/main.c -o $(BIN)/Markovia
+main: helpers
+	$(CC) $(CFLAGS) $(SRC)/main.cpp $(OBJ)/*.o -o $(BIN)/Markovia
+
+helpers:
+	$(CC) $(CFLAGS) -c $(SRC)/helpers.cpp -o $(OBJ)/helpers.o
 
 clean:
 	rm bin/*
