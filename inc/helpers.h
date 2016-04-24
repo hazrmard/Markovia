@@ -1,6 +1,10 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
+#define NUM_THREADS 8
+#define ORDER 3
+#define DATA_FILE "sample.txt"
+
 struct args {
     int nthreads;
     int order;
@@ -8,15 +12,18 @@ struct args {
 };
 
 struct params {
+    int index;
     long int start;
     long int end;
     int order;
-    std::string fname;
+    pthread_mutex_t *lock;
 };
 
-long int fsize(FILE *f);
 args parse_args(int argc, char **argv);
-void find_next_starting_point(FILE *f, long int offset);
+void find_next_starting_point(std::ifstream &f);
 void get_chunks(long int fsize, int nthreads, long int *chunks);
+long int file_size(std::ifstream &f);
+std::vector<std::string> read_data (std::ifstream &f, long int start, long int end);
+std::vector<std::string> read_data (std::ifstream &f);
 
 #endif

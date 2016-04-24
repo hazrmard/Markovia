@@ -4,38 +4,51 @@
 #include <pthread.h>
 #include <string>
 #include <vector>
+#include <map>
 #include "helpers.h"
+#include "markov.h"
 
 using namespace std;
 
-int main(int argc, char **argv) {
-    printf("Hello. This is the main function\n");
-    //pthread_t t1, t2;
+map<string, corpus> chain;
+pthread_mutex_t lock;
 
+int main(int argc, char **argv) {
     args a = parse_args(argc, argv);
     cout << "Num threads: " << a.nthreads << "\n";
     cout << "Order: " << a.order << "\n";
     cout << "File name: " << a.fname << "\n";
 
-    FILE *f = fopen(a.fname.c_str(), "r");
-    long int s = fsize(f);
-    printf("Size is: %ld\n", s);
-    fclose(f);
-
-    cout <<"\nChunks:\n";
-    long int chunks[a.nthreads+1];
-    get_chunks(s, a.nthreads, chunks);
+    vector<string> words;
     ifstream file;
     file.open(a.fname, ifstream::in);
-    char buff[chunks[a.nthreads]-chunks[a.nthreads-1]];
-    int i;
-    for (i=0; i<a.nthreads; i++) {
-        cout << chunks[i] << "\n";
-        file.seekg(chunks[i], ios_base::beg);
-        file.read(buff, chunks[i+1]-chunks[i]-1);
-        cout << buff << "\n";
-    }
+    words = read_data(file);
     file.close();
 
+    long int chunks[a.nthreads+1];
+    get_chunks(words.size(), a.nthreads, chunks);
+    pthread_t threads[a.nthreads];
+    pthread_mutex_init(&lock, NULL);
+    params p[a.nthreads];
+
+    // for (vector<string>::iterator i=words.begin(); i<words.end(); i++) {
+    //     cout << *i << " ";
+    // }
+    // cout << "\n";
+
+    for (int i=0; i<a.nthreads; i++) {
+        p[i].index = i;
+        p[i].start = chunks[i];
+        p[i].end = chunks[i+1];
+        p[i].order = a.order;
+        p[i].lock = &lock;
+        pthread_create(&threads[i], NULL, generate_chain, (void *) &p[i]);
+    }
+
+    for (int i=0; i<a.nthreads; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    pthread_mutex_destroy(&lock);
     return 0;
 }

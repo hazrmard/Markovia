@@ -6,11 +6,15 @@ OBJ=obj
 
 all: main
 
-main: helpers
+main: helpers markov
 	$(CC) $(CFLAGS) $(SRC)/main.cpp $(OBJ)/*.o -o $(BIN)/Markovia
 
 helpers:
 	$(CC) $(CFLAGS) -c $(SRC)/helpers.cpp -o $(OBJ)/helpers.o
+
+markov:
+	$(CC) $(CFLAGS) -c $(SRC)/markov.cpp -o $(OBJ)/markov.o
+
 
 clean:
 	rm bin/*
