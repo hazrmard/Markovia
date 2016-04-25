@@ -5,13 +5,14 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <time.h>
 #include <set>
 #include "helpers.h"
 #include "markov.h"
 
 using namespace std;
 
-map<string, std::set<std::string>> chain;
+map<string, std::multiset<std::string>> chain;
 vector<string> words;
 pthread_mutex_t lock;
 
@@ -20,8 +21,8 @@ int main(int argc, char **argv) {
     cout << "Num threads: " << a.nthreads << "\n";
     cout << "Order: " << a.order << "\n";
     cout << "File name: " << a.fname << "\n";
+    cout << "Output length: " << a.length << "\n";
 
-    //vector<string> words;
     ifstream file;
     file.open(a.fname, ifstream::in);
     words = read_data(file);
@@ -32,11 +33,6 @@ int main(int argc, char **argv) {
     pthread_t threads[a.nthreads];
     pthread_mutex_init(&lock, NULL);
     params p[a.nthreads];
-
-    // for (vector<string>::iterator i=words.begin(); i<words.end(); i++) {
-    //     cout << *i << " ";
-    // }
-    // cout << "\n";
 
     for (int i=0; i<a.nthreads; i++) {
         p[i].index = i;
@@ -51,7 +47,7 @@ int main(int argc, char **argv) {
     }
     pthread_mutex_destroy(&lock);
 
-    
+    random_walk(a.length, a.order);
 
     return 0;
 }

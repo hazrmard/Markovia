@@ -4,10 +4,12 @@
 #define NUM_THREADS 8
 #define ORDER 3
 #define DATA_FILE "sample.txt"
+#define LENGTH 20
 
 struct args {
     int nthreads;
     int order;
+    int length;
     std::string fname;
 };
 

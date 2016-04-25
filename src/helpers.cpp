@@ -70,6 +70,7 @@ args parse_args(int argc, char **argv) {
     a.nthreads = NUM_THREADS;
     a.order = ORDER;
     a.fname = DATA_FILE;
+    a.length = LENGTH;
     for (int i=1; i<argc; i++) {
         std::string arg(argv[i]);
         if (arg=="-n") {
@@ -78,6 +79,8 @@ args parse_args(int argc, char **argv) {
             a.order = std::stoi(argv[i+1]);
         } else if (arg=="-f") {
             a.fname = std::string(argv[i+1]);
+        } else if (arg=="-l") {
+            a.length = std::stoi(argv[i+1]);
         }
     }
     return a;
