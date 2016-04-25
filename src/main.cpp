@@ -5,12 +5,14 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include "helpers.h"
 #include "markov.h"
 
 using namespace std;
 
-map<string, corpus> chain;
+map<string, std::set<std::string>> chain;
+vector<string> words;
 pthread_mutex_t lock;
 
 int main(int argc, char **argv) {
@@ -19,7 +21,7 @@ int main(int argc, char **argv) {
     cout << "Order: " << a.order << "\n";
     cout << "File name: " << a.fname << "\n";
 
-    vector<string> words;
+    //vector<string> words;
     ifstream file;
     file.open(a.fname, ifstream::in);
     words = read_data(file);
@@ -44,11 +46,12 @@ int main(int argc, char **argv) {
         p[i].lock = &lock;
         pthread_create(&threads[i], NULL, generate_chain, (void *) &p[i]);
     }
-
     for (int i=0; i<a.nthreads; i++) {
         pthread_join(threads[i], NULL);
     }
-
     pthread_mutex_destroy(&lock);
+
+    
+
     return 0;
 }
