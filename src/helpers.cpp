@@ -13,42 +13,12 @@ long int file_size(std::ifstream &f) {
     return s;
 }
 
-void find_next_starting_point(std::ifstream &f) {
-    f.seekg(-2, std::ios_base::cur);
-    std::cout << "Scanning for next starting point: ";
-    char c;
-    while (!f.eof()) {
-        f.get(c);
-        std::cout << c;
-        if (isspace(c)) {
-            std::cout << "\n";
-            break;
-        }
-    }
-}
-
-std::vector<std::string> read_data (std::ifstream &f, long int start, long int end) {
-    if (start != 0L) {
-        f.seekg(start, std::ios_base::beg);
-        printf("Peek: %c\n", f.peek());
-        //find_next_starting_point(f);
-        printf("Peek: %c\n", f.peek());
-    }
-    std::string word;
-    std::vector<std::string> words;
-    while (f.tellg() <= end && !f.eof()) {
-        f >> word;
-        words.push_back(word);
-    }
-    return words;
-}
-
 std::vector<std::string> read_data (std::ifstream &f) {
     std::string word;
     std::vector<std::string> words;
     while (f >> word) {
         words.push_back(word);
-        if (f.peek() == '\n') {
+        if (f.peek()=='\n') {
             words.push_back("\n");
         }
     }

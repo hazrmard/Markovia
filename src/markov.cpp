@@ -9,6 +9,8 @@
 #include "helpers.h"
 #include "markov.h"
 
+std::string STOP_CHARS = ".\n";
+
 void *generate_chain(void *parameters) {
     params *p;
     p = (params *) parameters;
@@ -16,8 +18,8 @@ void *generate_chain(void *parameters) {
     std::string key;
     std::string suffix;
     for (std::vector<std::string>::iterator i=words.begin()+p->start; i<words.begin()+p->end; i++) {
-        key = "";
-        for (std::vector<std::string>::iterator j=i; j<i+p->order; j++) {
+        key = *i;
+        for (std::vector<std::string>::iterator j=i+1; j<i+p->order; j++) {
             key = key + " " + *j;
         }
         suffix = *(i+p->order);
@@ -43,7 +45,7 @@ void random_walk(int length, int order) {
     std::advance(i, rand() % chain.size());
     prefix = i->first;
     std::cout << prefix << " ";
-    while (count < length || suffix != "\n") {
+    while (count < length || STOP_CHARS.find(suffix.back())==std::string::npos) {
 
         auto j = (i->second).begin();
         std::advance(j, rand() % (i->second).size());
@@ -62,5 +64,16 @@ void random_walk(int length, int order) {
             i = chain.begin();
             std::advance(i, rand() % chain.size());
         }
+    }
+}
+
+void print_chain() {
+    std::cout << "Prefix\t\tSuffix\n";
+    for (auto i= chain.begin(); i!=chain.end(); i++) {
+        std::cout << i->first << ":\t";
+        for (auto j=(i->second).begin(); j!=(i->second).end(); j++) {
+            std::cout << *j << ", ";
+        }
+        std::cout << "\n";
     }
 }

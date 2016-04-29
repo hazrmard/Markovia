@@ -47,6 +47,9 @@ int main(int argc, char **argv) {
     }
     pthread_mutex_destroy(&lock);
 
+    cout << "Number of words: " << words.size() << "\n";
+
+    cout << "\nGenerating text:\n";
     random_walk(a.length, a.order);
 
     return 0;
