@@ -7,7 +7,7 @@ OBJ=obj
 all: main
 
 main: helpers markov
-	$(CC) $(CFLAGS) $(SRC)/main.cpp $(OBJ)/*.o -o $(BIN)/Markovia
+	$(CC) $(CFLAGS) $(SRC)/main.cpp $(OBJ)/*.o -o $(BIN)/markovia
 
 helpers:
 	$(CC) $(CFLAGS) -c $(SRC)/helpers.cpp -o $(OBJ)/helpers.o
